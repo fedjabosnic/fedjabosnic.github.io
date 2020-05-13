@@ -19,3 +19,8 @@ jobs:
       with:
         trigger: '@fedjabosnic apply'
         reaction: '+1'
+
+    - name: print context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "$GITHUB_CONTEXT"
