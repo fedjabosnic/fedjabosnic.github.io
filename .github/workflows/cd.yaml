@@ -1,0 +1,21 @@
+name: cd
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  cd:
+    name: cd
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: pull code
+      uses: actions/checkout@v1
+
+    - uses: khan/pull-request-comment-trigger@master
+      env:
+        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+      with:
+        trigger: '@fedjabosnic apply'
+        reaction: '+1'
