@@ -4,11 +4,16 @@ on:
   issue_comment:
     types: [created]
 
+env:
+  BOT_USER: '${{ secrets.BOT_USER }}'
+
 jobs:
   cd:
     name: cd
     runs-on: ubuntu-latest
-    if: github.event.issue.pull_request && contains(github.event.comment.body, secrets.BOT_USER) && contains(github.event.comment.body, '/apply')
+
+
+    if: github.event.issue.pull_request && contains(github.event.comment.body, env.BOT_USER) && contains(github.event.comment.body, '/apply')
 
     steps:
 
