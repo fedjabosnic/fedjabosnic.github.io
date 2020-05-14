@@ -36,9 +36,9 @@ jobs:
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         GITHUB_CONTEXT: '${{ toJson(github) }}'
       run: |
-        pull_request = jq -r ${GITHUB_CONTEXT} '.event.issue.pull_request.url'
-        sha = curl ${pull_request} -H 'Authorization: token ${GITHUB_TOKEN}' | jq -r '.head.sha'
-        echo '::set-output name=sha::${sha}'
+        PULL_REQUEST=$(jq -r ${GITHUB_CONTEXT} '.event.issue.pull_request.url')
+        SHA=$(curl ${PULL_REQUEST} -H 'Authorization: token ${GITHUB_TOKEN}' | jq -r '.head.sha')
+        echo '::set-output name=sha::${SHA}'
       id: pr
     
     - name: pull code
