@@ -4,31 +4,24 @@ on:
   issue_comment:
     types: [created]
 
-env:
-  BOT_USER: '${{ secrets.BOT_USER }}'
-
 jobs:
   cd:
     name: cd
     runs-on: ubuntu-latest
-
-
-    if: github.event.issue.pull_request && contains(github.event.comment.body, env.BOT_USER) && contains(github.event.comment.body, '/apply')
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '@fedjabosnic /apply')
 
     steps:
 
     - name: trigger
       env:
-        GITHUB_USER: '${{ secrets.BOT_USER }}'
-        GITHUB_TOKEN: '${{ secrets.BOT_TOKEN }}'
-        GITHUB_CONTEXT: '${{ toJson(github) }}'
+        BOT_USER: '${{ secrets.BOT_USER }}'
+        BOT_TOKEN: '${{ secrets.BOT_TOKEN }}'
+        URL_REACTION:  '${{ toJson(github.event.comment.url) }}/reactions'
+        URL_PULL_REQUEST:  '${{ toJson(github.event.issue.pull_request.url) }}'
       run: |
-        COMMENT=$(echo ${GITHUB_CONTEXT} | jq -r '.event.comment.url')/reactions
-        curl ${COMMENT} -d '{"content": "+1"}' -u ${GITHUB_TOKEN}:${GITHUB_TOKEN} -H 'Accept: application/vnd.github.squirrel-girl-preview+json'
-        
-        PULL_REQUEST=$(echo ${GITHUB_CONTEXT} | jq -r '.event.issue.pull_request.url')
-        SHA=$(curl ${PULL_REQUEST} -u ${GITHUB_TOKEN}:${GITHUB_TOKEN} | jq -r '.head.sha')
-        echo ::set-output name=sha::${SHA}
+        HEAD_SHA=$(curl ${URL_PULL_REQUEST} -u ${BOT_USER}:${BOT_TOKEN} | jq -r '.head.sha')
+        REACTION=$(curl ${URL_REACTION} -d  -u ${BOT_USER}:${BOT_TOKEN}'{"content": "+1"}'  -H 'Accept: application/vnd.github.squirrel-girl-preview+json')
+        echo ::set-output name=sha::${HEAD_SHA}
       id: pr
     
     - name: pull code
