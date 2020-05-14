@@ -18,7 +18,7 @@ jobs:
         GITHUB_CONTEXT: '${{ toJson(github) }}'
       run: |
         COMMENT=$(echo ${GITHUB_CONTEXT} | jq -r '.event.comment.url')/reactions
-        curl ${COMMENT} -d '{"content": "+1"}'
+        curl ${COMMENT} -d '{"content": "+1"}' -H 'Accept: application/vnd.github.squirrel-girl-preview+json'
         
         PULL_REQUEST=$(echo ${GITHUB_CONTEXT} | jq -r '.event.issue.pull_request.url')
         SHA=$(curl ${PULL_REQUEST} | jq -r '.head.sha')
