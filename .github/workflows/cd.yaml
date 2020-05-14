@@ -16,8 +16,8 @@ jobs:
       env:
         BOT_USER: '${{ secrets.BOT_USER }}'
         BOT_TOKEN: '${{ secrets.BOT_TOKEN }}'
-        URL_REACTION:  '${{ toJson(github.event.comment.url) }}/reactions'
-        URL_PULL_REQUEST:  '${{ toJson(github.event.issue.pull_request.url) }}'
+        URL_REACTION:  '${{ github.event.comment.url }}/reactions'
+        URL_PULL_REQUEST:  '${{ github.event.issue.pull_request.url }}'
       run: |
         HEAD_SHA=$(curl ${URL_PULL_REQUEST} -u ${BOT_USER}:${BOT_TOKEN} | jq -r '.head.sha')
         REACTION=$(curl ${URL_REACTION}     -u ${BOT_USER}:${BOT_TOKEN}' -d {"content": "+1"}' -H 'Accept: application/vnd.github.squirrel-girl-preview+json')
