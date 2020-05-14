@@ -8,7 +8,7 @@ jobs:
   cd:
     name: cd
     runs-on: ubuntu-latest
-    if: github.event.issue.pull_request && contains(github.event.comment.body, '@${{ secrets.BOT_USER }} /apply')
+    if: github.event.issue.pull_request && contains(github.event.comment.body, secrets.BOT_USER) && contains(github.event.comment.body, '/apply')
 
     steps:
 
