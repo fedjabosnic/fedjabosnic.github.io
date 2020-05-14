@@ -23,6 +23,7 @@ jobs:
         REACTION=$(curl ${URL_REACTION}     -u fedjabosnic:${BOT_TOKEN}' -d {"content": "+1"}' -H 'Accept: application/vnd.github.squirrel-girl-preview+json')
         echo ::set-output name=sha::${HEAD_SHA}
         echo ::set-output name=response::${REACTION}
+        echo ${REACTION}
       id: pr
     
     - name: pull code
