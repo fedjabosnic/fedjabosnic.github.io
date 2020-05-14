@@ -8,45 +8,21 @@ jobs:
   cd:
     name: cd
     runs-on: ubuntu-latest
-    if: github.event.issue.pull_request && contains(github.event.comment.body, '@fedjabosnic /apply')
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '@${{ secrets.BOT_USER }} /apply')
 
     steps:
 
     - name: trigger
       env:
+        GITHUB_USER: '${{ secrets.BOT_USER }}'
         GITHUB_TOKEN: '${{ secrets.BOT_TOKEN }}'
         GITHUB_CONTEXT: '${{ toJson(github) }}'
       run: |
         COMMENT=$(echo ${GITHUB_CONTEXT} | jq -r '.event.comment.url')/reactions
-        curl ${COMMENT} -d '{"content": "+1"}' -u fedjabosnic:${GITHUB_TOKEN} -H 'Accept: application/vnd.github.squirrel-girl-preview+json'
+        curl ${COMMENT} -d '{"content": "+1"}' -u ${GITHUB_TOKEN}:${GITHUB_TOKEN} -H 'Accept: application/vnd.github.squirrel-girl-preview+json'
         
         PULL_REQUEST=$(echo ${GITHUB_CONTEXT} | jq -r '.event.issue.pull_request.url')
-        SHA=$(curl ${PULL_REQUEST} | jq -r '.head.sha')
-        echo ::set-output name=sha::${SHA}
-      id: pr
-    
-    - name: pull code
-      uses: actions/checkout@v1
-      with:
-          ref: ${{ steps.pr.outputs.sha }}
-
-    - name: check
-      run : ls
-
-  apply:
-    name: apply
-    runs-on: ubuntu-latest
-    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '@elb2c-bot /apply')
-
-    steps:
-    - name: get pull request info
-      env:
-        GITHUB_TOKEN: '${{ secrets.BOT_TOKEN }}'
-        GITHUB_CONTEXT: '${{ toJson(github) }}'
-      run: |
-        PULL_REQUEST=$(echo ${GITHUB_CONTEXT} | jq -r '.event.issue.pull_request.url')
-        curl ${PULL_REQUEST}
-        SHA=$(curl ${PULL_REQUEST} | jq -r '.head.sha')
+        SHA=$(curl ${PULL_REQUEST} -u ${GITHUB_TOKEN}:${GITHUB_TOKEN} | jq -r '.head.sha')
         echo ::set-output name=sha::${SHA}
       id: pr
     
