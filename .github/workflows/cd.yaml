@@ -14,7 +14,7 @@ jobs:
 
     - name: trigger
       env:
-        GITHUB_TOKEN: '${{ secrets.BOT_TOKEN }}'
+        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         GITHUB_CONTEXT: '${{ toJson(github) }}'
       run: |
         COMMENT=$(echo ${GITHUB_CONTEXT} | jq -r '.event.comment.url')/reactions
