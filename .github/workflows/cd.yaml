@@ -31,17 +31,13 @@ jobs:
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '@elb2c-bot /apply')
 
     steps:
-    - name: test curl
-      run: |
-        echo $(curl ${PULL_REQUEST} -H 'Authorization: token ${GITHUB_TOKEN}')
-
     - name: get pull request info
       env:
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         GITHUB_CONTEXT: '${{ toJson(github) }}'
       run: |
-        PULL_REQUEST=$(echo ${GITHUB_CONTEXT} | jq '.event.issue.pull_request.url')
-        SHA=$(curl ${PULL_REQUEST} -H 'Authorization: token ${GITHUB_TOKEN}' | jq '.head.sha')
+        PULL_REQUEST=$(echo ${GITHUB_CONTEXT} | jq -r '.event.issue.pull_request.url')
+        SHA=$(curl ${PULL_REQUEST} -H 'Authorization: token ${GITHUB_TOKEN}' | jq -r '.head.sha')
         echo ::set-output name=sha::${SHA}
       id: pr
     
