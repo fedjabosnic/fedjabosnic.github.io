@@ -17,8 +17,9 @@ jobs:
         GITHUB_TOKEN: '${{ secrets.BOT_TOKEN }}'
         GITHUB_CONTEXT: '${{ toJson(github) }}'
       run: |
-        COMMENT=$(echo ${GITHUB_CONTEXT} | jq -r '.event.comment.url')
-        curl ${PULL_REQUEST}/reactions -d '{"content": "+1"}'
+        COMMENT=$(echo ${GITHUB_CONTEXT} | jq -r '.event.comment.url')/reactions
+        echo $COMMENT
+        curl ${PULL_REQUEST} -d '{"content": "+1"}'
         
         PULL_REQUEST=$(echo ${GITHUB_CONTEXT} | jq -r '.event.issue.pull_request.url')
         SHA=$(curl ${PULL_REQUEST} | jq -r '.head.sha')
