@@ -38,7 +38,7 @@ jobs:
       run: |
         PULL_REQUEST = echo ${GITHUB_CONTEXT} | jq '.event.issue.pull_request.url'
         SHA = curl ${PULL_REQUEST} -H 'Authorization: token ${GITHUB_TOKEN}' | jq '.head.sha'
-        echo '::set-output name=sha::${SHA}'
+        echo ::set-output name=sha::${SHA}
       id: pr
     
     - name: pull code
