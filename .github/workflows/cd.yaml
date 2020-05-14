@@ -31,6 +31,10 @@ jobs:
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '@elb2c-bot /apply')
 
     steps:
+    - name: test curl
+      run: |
+        echo $(curl https://google.com)
+
     - name: get pull request info
       env:
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
