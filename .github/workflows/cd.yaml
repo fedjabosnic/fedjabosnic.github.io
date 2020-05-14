@@ -10,20 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: pull code
-      uses: actions/checkout@v1
 
-    - uses: khan/pull-request-comment-trigger@master
+    - name: trigger
+      uses: khan/pull-request-comment-trigger@master
       env:
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
       with:
         trigger: '@fedjabosnic apply'
         reaction: '+1'
 
-    - name: print context
+    - name: get pull request info
       env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: echo "$GITHUB_CONTEXT"
+        GITHUB_TOKEN: '${{ secrets.BOT_TOKEN }}'
+        GITHUB_CONTEXT: '${{ toJson(github) }}'
+      run: |
+        PULL_REQUEST=$(echo ${GITHUB_CONTEXT} | jq -r '.event.issue.pull_request.url')
+        SHA=$(curl ${PULL_REQUEST} | jq -r '.head.sha')
+        echo ::set-output name=sha::${SHA}
+      id: pr
+    
+    - name: pull code
+      uses: actions/checkout@v1
+      with:
+          ref: ${{ steps.pr.outputs.sha }}
+
+    - name: check
+      run : ls
 
   apply:
     name: apply
