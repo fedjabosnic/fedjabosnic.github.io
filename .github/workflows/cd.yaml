@@ -33,14 +33,13 @@ jobs:
     steps:
     - name: test curl
       run: |
-        echo $(curl https://google.com)
+        echo $(curl ${PULL_REQUEST} -H 'Authorization: token ${GITHUB_TOKEN}')
 
     - name: get pull request info
       env:
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         GITHUB_CONTEXT: '${{ toJson(github) }}'
       run: |
-        apt-get install curl
         PULL_REQUEST=$(echo ${GITHUB_CONTEXT} | jq '.event.issue.pull_request.url')
         SHA=$(curl ${PULL_REQUEST} -H 'Authorization: token ${GITHUB_TOKEN}' | jq '.head.sha')
         echo ::set-output name=sha::${SHA}
