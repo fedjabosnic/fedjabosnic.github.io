@@ -14,11 +14,11 @@ jobs:
 
     - name: trigger
       env:
-        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+        GITHUB_TOKEN: '${{ secrets.BOT_TOKEN }}'
         GITHUB_CONTEXT: '${{ toJson(github) }}'
       run: |
         COMMENT=$(echo ${GITHUB_CONTEXT} | jq -r '.event.comment.url')/reactions
-        curl ${COMMENT} -d '{"content": "+1"}' -H 'Authorization: token ${GITHUB_TOKEN}' -H 'Accept: application/vnd.github.squirrel-girl-preview+json'
+        curl ${COMMENT} -d '{"content": "+1"}' -u fedjabosnic:${GITHUB_TOKEN} -H 'Accept: application/vnd.github.squirrel-girl-preview+json'
         
         PULL_REQUEST=$(echo ${GITHUB_CONTEXT} | jq -r '.event.issue.pull_request.url')
         SHA=$(curl ${PULL_REQUEST} | jq -r '.head.sha')
